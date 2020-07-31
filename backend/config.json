@@ -1,0 +1,10 @@
+{
+	"port": 8080,
+	"wpCyberlabURL":"https://demo.wpcyberlab.com",
+	"wpCyberlabApiKey:":"Add WPCYBERLAB API KEY HERE",
+	"https": {
+		"enabled": false,
+		"keyFilePath":"PATH_TO_SSL_KEY_FILE",
+		"certFilePath":"PATH_TO_SSL_CERT_FILE"
+	}
+}

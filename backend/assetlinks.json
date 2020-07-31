@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.android.wpufido2",
+      "sha256_cert_fingerprints": [
+        "CE:CC:03:11:49:9D:58:31:A4:6F:45:1C:86:D8:12:A4:32:AB:93:05:D7:11:E1:83:D6:E2:E3:54:CA:4F:66:EE"
+      ]
+    }
+  }
+]

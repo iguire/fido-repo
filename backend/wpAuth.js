@@ -20,7 +20,7 @@ router.post('/register/initiate', async (req, res) => {
 
 	let name = req.body.name;
 	if(!name || name === "") {
-		return res.status(400).json({message:"Name field cannot be empty", statusCode:400)}
+		return res.status(400).json({message:"Name field cannot be empty", statusCode:400})
 	}
 
 // Initiate WP (William Paterson Cyberlab Session for User)
@@ -37,7 +37,7 @@ if (!db[name]) {
 let choices;
 if(!db[name].skUserID) {
 	try {
-	  const response = await wpcyberlabAPICall('/users',{username:name})
+	  const response = await wpufido2api('/users',{username:name})
 	  const parsedResponse = JSON.parse(response)
 	  db[name].skUserID = parsedResponse.userID;
 	}
@@ -49,7 +49,7 @@ if(!db[name].skUserID) {
 
 // wpcyberlabAPI FIDO2 Register - start API call
 try {
-	const response = await wpcyberlabAPICall('/users/${db[name].skUserID}/credentials/fido2/register/initiate', req.body)
+	const response = await wpufido2api('/users/${db[name].skUserID}/credentials/fido2/register/initiate', req.body)
 	const parsedResponse = JSON.parse(reponse)
 	console.log(parsedResponse)
 	res.status(200).json(parsedResponse)
@@ -68,12 +68,12 @@ router.post('/register/complete', async(req, res) => {
 	console.log(req.route.path)
 	let name = req.session.name || req.cookies.name;
 	if (!db[name]) {
-		return res.status(400.json({message:"Error! User not found", statusCode:400)}
+		return res.status(400).json({message:"Error! User not found", statusCode:400})
 }
 
 // WPcyberlab Key FIDO2 Register Complete API call
 try {
-  const response = await wpcyberlabAPICall('/users/${db[name].skUserID}/credentials/fido2/regiser/complete', req.body(
+  const response = await wpufido2api('/users/${db[name].skUserID}/credentials/fido2/regiser/complete', req.body)
   const parsedResponse = JSON.parse(response)
   console.log(parsedResponse)
   req.status(200).json(parsedResponse);
@@ -102,7 +102,7 @@ req.session.name = name;
 
 //WPcyberlab Key FIDO2 Authentiaction intiate API call
 try {
-	const response = await wpcyberlabAPICall('/users/${db[name].skUserId}/credentials/fido2/auth/initiate')
+	const response = await wpufido2api('/users/${db[name].skUserId}/credentials/fido2/auth/initiate')
 	const parsedRsesponse = JSON.parse(response)
 	console.log(parsedResponse)
 	res.status(200).json(parsedResponse);
@@ -126,16 +126,12 @@ router.post('/auth/complete', async(req, res) => {
 
 // WPcyberlab Key FIDO2 Authentication Complete API call
 try {
-	const response = await wpcyberlabAPICall('/users/{db[name].skUserId}/credentia;s/fido2/auth/complete',req.body)
+	const response = await wpufido2api('/users/{db[name].skUserId}/credentials/fido2/auth/complete',req.body)
 	const parsedResponse = JSON.parse(response)
 	if (parsedResponse.success) {
 		req.session.isLoggedIn = true
 	}
 	console.log(parsedResponse) 
-	req.status(200).json(parsedResponse);
-}
- catch(err) {
-	console.log(err)
 	res.status(200).json(parsedResponse);
 }
  catch(err) {
@@ -154,17 +150,17 @@ try {
 })
 
 /* Wpcyberlab Key API Call Helper Function */
-const wpcyberlabAPICall = (uri, body) => {
+const wpufido2api = (uri, body) => {
 	let choices = {
-	methodL 'POST',
+	method: 'POST',
 	uri:'${config.wpcyberlabUrl}${uri}',
 	headers: {
 	'Content-type': "application/json",
 	'X-SK-API-KEY': '${config.wpcyberlabAPIkey}'
-}
-}
-if(body( {
-	choices.body = JSON.stringify(body(
+	}
+   }
+if(body) {
+	choices.body = JSON.stringify(body)
 }
  return request(choices)
 }

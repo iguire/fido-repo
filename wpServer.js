@@ -1,42 +1,47 @@
-// This file will serve as the main entry point for the wpcyberlab 
+/* The following program will serve as the main entry point for the WPcyberlab VPS (AWS) */
 
-//init variables
-const express = require('express');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const path = require('path');
-const app = express();
 
-const port = process.env.PORT || 1855;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+// Initialize modules
+const express = require('express'), 
+bodyParser = require('body-parser'), 
+cookieSession = require('cookie-session'), 
+cookieParser = require('cookie-parser'), 
+path = require('path'), 
+fs = require('fs'), 
+crypto = require('crypto'), 
+config = require('./backend/config.json'),
+routes = require('./frontend/index.');
 
-app.set('port', port);
-app.set('env', NODE_ENV);
 
-app.use(logger('tiny'));
+let wpServer;
+const app = express(); // setting constant variable app to call express function (express server)
+
+if (config.https.enabled) {
+	var choices = {
+		key: fs.readFileSync(config.https.keyFilePath),
+		cert: fs.readFileSync(config.https.certFilePath),
+		requestCert: false,
+		rejectUnauthorized: false
+	};
+
+	wpServer = require('https').createServer(choices, app);
+  } else {
+	wpServer = require('http').Server(app);
+}
+
 app.use(bodyParser.json());
+app.use(cookieSession({name: 'session', keys: [crypto.randomBytes(32).toString('hex')],secure: false })) 
+app.use(cookieParser())
 
-app.use('/', require(path.join(_dirname, 'routes')));
+// RP (WP) Web App
+app.use(express.static(path.join(_dirname, 'backend')));
 
-app.use((req, res, next) => {
-	const error = new Error('${req.method} ${req.url} Not Found');
-	error.status = 404;
-	next(error);
-});
+// RP (WP) Server Api
+app.use('/', routes)
 
-app.use(error, req, req, res, next) => {
-	console.error(error);
-	res.status(error.status || 500);
-	res.json({
-		error: {
-			message: error.message,
-	},
-	});
-	});
+const port = config.port || 8080;
+server.listen(port);
+console.log('WPCyberlab Server is running on port ${port}');
 
-// Listening for server response/request
-	app.listen(port, () => }
-		console.log(
-			'wpcyberlab Server started on port ${app.get {
-					
-			)} | Environment : $(app.get('env')}'
+module.exports = app;
+ 

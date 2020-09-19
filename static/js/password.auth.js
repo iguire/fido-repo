@@ -3,7 +3,7 @@ $('#register').submit(function(event) {
     event.preventDefault();
 
     let username = this.username.value;
-    let password = this.password.value;
+//    let password = this.password.value;
     let name     = this.name.value;
 
     if(!username || !password || !name) {
@@ -36,7 +36,7 @@ $('#login').submit(function(event) {
     event.preventDefault();
 
     let username = this.username.value;
-    let password = this.password.value;
+//    let password = this.password.value;
 
     if(!username || !password) {
         alert('Username or password is missing!')
